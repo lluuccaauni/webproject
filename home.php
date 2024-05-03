@@ -33,16 +33,19 @@
       </style>
 
       <script>
-        //check if the session theme is set to night
+        //check if the session theme is set to night or not
         function checkTheme() {
-
+          //request
           let xhr = new XMLHttpRequest();
+          //pack up data for transmission
+          //the "get" value tells php that the theme is to be retrieved
           const themeData = `theme=${encodeURIComponent("get")}`;
 
           xhr.onreadystatechange = function() {
             if(xhr.readyState === XMLHttpRequest.DONE)
               if(xhr.status === 200) {
-                if(xhr.responseText !== "No theme set") {
+                if(xhr.responseText !== "No theme set") { //if php returns this string, it means that no theme has been set yet
+                  //otherwise, according to the theme set, check or uncheck the toggle triggering it
                   if(xhr.responseText === "emerald")
                     document.getElementById("themeToggle").checked = false;
                   else if(xhr.responseText === "night")
@@ -53,12 +56,15 @@
                 alert("Error in loading theme preference.");
           };
 
+          //send the actual request
           xhr.open("POST", "./PHP/changetheme.php");
           xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
           xhr.send(themeData);
         };
         
+        //this function sets the theme; when it is changed, the edit is saved
         function changeTheme() {
+          //if the box controlling the theme is checked, then the theme is light ("emerald"), otherwise dark ("night")
           let checkBox = document.getElementById("themeToggle");
           
           let theme;
@@ -68,6 +74,7 @@
           else
             theme = "emerald";
 
+          //request, as before
           let xhr = new XMLHttpRequest();
           const themeData = `theme=${encodeURIComponent(theme)}`;
 
@@ -118,6 +125,7 @@
           //hide side menu
           document.getElementById("my-drawer").checked = false;
 
+          //request, as before
           let xhr = new XMLHttpRequest();
           xhr.open("GET", "./PHP/deleteaccount.php", true);
 
@@ -126,6 +134,7 @@
               if(xhr.status == 200) {
                 alert("Deleted!");
 
+                //redirect to the log in / sign up page
                 window.location.href = "./access.php";
               }
               else {
@@ -135,26 +144,36 @@
           }
 
           //----------------------------------------------------------------------------
+          //if this value gets changed in the meantime by the under-defined "cancelDeletion", function, the deletion is canceled
           isAccountDeletionConfirmed = true;
           document.getElementById("accountDeletionModal").showModal();
 
           const countdownValue = document.getElementById("countdownValue");
-          let countdownTime = 4;
+          let countdownTime = 4; //initial value. not set to "5" due to the time it takes for the modal to pop and the countdown to start.
 
+          //set interval of 1000 ms (1 s); every second, the countdownTime variable's value is decremented by 1
           const countdownInterval = setInterval(() => {
+            //set value through a daisyUI specific property, which allows for the animation etc.
             countdownValue.style.setProperty("--value", countdownTime);
             countdownTime--;
 
+            //if the variable, as said above, has been assigned "false" in the meantime, the interval is cleared, meaning that the countdown has stopped
             if(!isAccountDeletionConfirmed) {
               clearInterval(countdownInterval);
+              /*reset value, in case the operation is started again (or the initial value wouldn't be 5,
+                even if this wouldn't influence the available time to cancel, as this is still influenced by the countdownTime initial value)*/
               document.getElementById("countdownValue").style.setProperty("--value", 5);
             }
 
+            //if 5 seconds have passed...
             if(countdownTime < -1) {
+              //block the displayed value to 0
               countdownValue.style.setProperty("--value", 0);
 
+              //send the deletion request defined above.
               xhr.send();
 
+              //stop the countdown
               clearInterval(countdownInterval);
             }
           }, 1000);
@@ -170,7 +189,7 @@
         let expensesCategories;
 
         function getHomeData() {
-
+          //show loader
           document.getElementById("loader").classList.remove("hidden");
           
           let xhr = new XMLHttpRequest();
@@ -275,10 +294,14 @@
         }
       </script>
 
+      <!--this script is executed as soon as the page has been fully loaded-->
       <script>
         document.addEventListener("DOMContentLoaded", function() {
+          //this calls the function which checks whether the theme has been changed or not
           checkTheme();
+          //this gets the first tab's info
           getHomeData();
+          //this displays the first tab
           showTab(1);
         });
       </script>
@@ -319,6 +342,7 @@
       </script>
 
       <script>
+        //this is about the two charts in the detailed view tab and it follows pretty much the same methodologies already implemented above
         let expensesDetailedChart = null;
         let revenuesDetailedChart = null;
 
@@ -456,9 +480,11 @@
       </script>
 
       <script>
+        //this is the function which sends a request to add the data inserted by the user; again, an AJAX request is defined and sent.
         function sendExpense() {
           document.getElementById("loader").classList.remove("hidden");
 
+          //this is a string encoding each value so that it is easy to retrieve them with PHP
           const formData = `expenseAmount=${encodeURIComponent(document.getElementById("expenseAmount").value)}&expenseCategory=${encodeURIComponent(document.getElementById("expensesCategories").value)}&expenseDescription=${encodeURIComponent(document.getElementById("expenseDescription").value)}&expenseLocation=${encodeURIComponent(document.getElementById("expensesLocation").value)}&expenseDate=${encodeURIComponent(document.getElementById("expenseDate").value)}`;
 
           let xhr = new XMLHttpRequest();
@@ -486,11 +512,13 @@
             }
           };
 
+          //the encoded string is attaached to the request
           xhr.send(formData);
         }
       </script>
 
       <script>
+        //this is equivalent to the function above; the difference is that it handles the revenue submission instead of the expense one
         function sendRevenue() {
           document.getElementById("loader").classList.remove("hidden");
 
@@ -527,14 +555,16 @@
 
       <script>
         function changeYear(amount) {
-          if(document.getElementById("year").innerHTML === "year")
-            document.getElementById("year").innerHTML = 2000;
+          if(document.getElementById("year").innerHTML === "year") //if one of the coloured buttons is clicked for the first time...
+            document.getElementById("year").innerHTML = 2000; //...set the its value to the year 2000 by default
           else
-            document.getElementById("year").innerHTML = Number(document.getElementById("year").innerHTML) + amount;
+            document.getElementById("year").innerHTML = Number(document.getElementById("year").innerHTML) + amount; //or add or subtract
         }
       </script>
 
       <script>
+        //the same coloured buttons did not seem to work with the join-horizontal and join-vertical classes
+        //this is what this script is about: manually switching them
         document.addEventListener("DOMContentLoaded", function() {
           function updateJoinClasses() {
             const viewportWidth = window.innerWidth;
@@ -549,9 +579,10 @@
             }
           }
 
+          //the switch occurs when the window is resized
           window.addEventListener("resize", updateJoinClasses);
 
-          // Chiama la funzione updateJoinClasses al caricamento della pagina
+          //the same function is called once the page has been fully loaded
           updateJoinClasses();
         });
       </script>
@@ -583,6 +614,7 @@
 
           //------------------------
 
+          //AJAX request, as seen before
           let xhr = new XMLHttpRequest();
           xhr.open("POST", "./PHP/statisticspage2.php");
           xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -607,6 +639,9 @@
       </script>
 
       <script>
+
+        //this functions handle the deletion of a record by its ID and its type (expense or revenue)
+        //the methodologies are similar to what has been implemented above
         function triggerRecordDeletionModal() {
           //hide side menu
           document.getElementById("my-drawer").checked = false;
