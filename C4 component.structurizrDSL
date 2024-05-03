@@ -1,0 +1,98 @@
+workspace {
+    model {
+        user = person "User"
+        
+        expensesTracker = softwareSystem "Expenses Tracker Application" {
+            accessPage = container "Access page" "A page that handles the login and signup phase" "Built with HTML, CSS (Tailwind, daisyUI), JavaScript, and AJAX" {
+                tags "webpages"
+            }
+            
+            homePage = container "Main page" "The page that implements the core functionalities of the application" "Built with HTML, CSS (Tailwind, daisyUI), JavaScript, and AJAX" {
+                tags "webpages"
+            }
+            
+            chartJS = container "chartJS Chart library" "The software library that makes chart making straightforward" {
+                tags "additionalComponents"
+            }
+            
+            tailwindFramework = container "Tailwind CSS framework" "Used mainly for responsitivity purposes" {
+                tags "additionalComponents"
+            }
+            
+            daisyUILibrary = container "daisyUI CSS library" "Used for the aesthetic part of the application" {
+                tags "additionalComponents"
+            }
+            
+            server = container "Server" "Apache" {
+                tags "server"
+            }
+            
+            APIs = container "MySQL API" "Handles user authentication and trasmittion of data" "PHP" {
+                tags "APIs"
+            }
+            
+            SQLdatabase = container "MySQL database" "Stores both the application and user data" {
+                tags "database"
+            }
+        }
+
+        user -> accessPage "Interacts with"
+        user -> homePage "Interacts with"
+        accessPage -> homePage "Redirects the user to the"
+        homePage -> tailwindFramework "Uses"
+        homePage -> daisyUILibrary "Uses"
+        homePage -> chartJs "Uses"
+        
+        accessPage -> server "Communicates with"
+        homePage -> server "Communicates with"
+        
+        server -> APIs "runs"
+        
+        APIs -> SQLdatabase "Give access to"
+    }
+
+    views {
+        container expensesTracker "Component" {
+            include *
+            autoLayout
+        }
+        
+        styles {
+            element "Software System" {
+                background #1168bd
+                color #ffffff
+            }
+            element "Person" {
+                shape person
+                background #08427b
+                color #ffffff
+            }
+            element "webpages" {
+                shape webbrowser
+                background #57b514
+                color #ffffff
+            }
+            element additionalComponents {
+                shape component
+                background #1542bf
+                color #ffffff
+            }
+            
+            element "server" {
+                shape roundedbox
+                background #1089a1
+                color #ffffff
+            }
+            element "APIs" {
+                shape hexagon
+                background #e8ad0c
+                color #ffffff
+            }
+            element "database" {
+                shape cylinder
+                background #820707
+                color #ffffff
+            }
+        }
+    }
+}
