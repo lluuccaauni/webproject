@@ -341,11 +341,11 @@
           <h3>&#10071;&#10067;</h3>
           <div>
             <h2 class="font-bold">Error in the form!</h3>
-            <div class="text">The <b>username</b> must be at least 8 characters long.<br/>The <b>password</b> must contain:
+            <div class="text">The <b>username</b> must be between 8 and 10 characters long.<br/>The <b>password</b> must contain:
               <ul>
                 <li>• 2-3 lowercase letters</li>
                 <li>• 2-3 uppercaseletters</li>
-                <li>• 2 digits letters</li>
+                <li>• 2 digits</li>
                 <li>• 2 special characters among: !"$%&()=?^:;@#</li>
               </ul>
             </div>
