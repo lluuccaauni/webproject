@@ -1,6 +1,6 @@
 Install XAMPP (my version was 3.3.0).
 
-(The default installation settings during the installation processare fine.)
+(The default installation settings during the installation process are fine.)
 
 Start the Control Panel.
 
