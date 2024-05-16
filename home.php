@@ -1039,7 +1039,7 @@
 
           <div class="modal-action">
             <form method="dialog">
-              <button class="btn">Close</button>
+              <button class="btn" onclick="window.location.reload()">Close</button>
             </form>
           </div>
         </div>
